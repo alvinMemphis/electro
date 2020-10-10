@@ -35,8 +35,8 @@ class Candidates(db.Model):
     __tablename__ = 'candidate'
     name = db.Column(db.String(20))
     id = db.Column(db.Integer,primary_key=True)
-    party_id = db.Column(db.String(20),ForeignKey('party.id'))
-    post_id = db.Column(db.String(20),ForeignKey('posts.id'))
+    party_id = db.Column(db.String(20),db.ForeignKey('party.id'))
+    post_id = db.Column(db.String(20),db.ForeignKey('posts.id'))
 class SubCounty(db.Model):
 
      __tablename__ = 'subcounty'
@@ -44,13 +44,13 @@ class SubCounty(db.Model):
      id = db.Column(db.Integer,primary_key=True)
 
      parishes = db.relationship('Parish',backref= 'subcounty',lazy= 'dynamic')
-     county_id = db.Column(db.Integer,ForeignKey('county.id'))
+     county_id = db.Column(db.Integer,db.ForeignKey('county.id'))
 class County(db.Model):
      __tablename__ = 'county'
      name = db.Column(db.String(20),unique = True)
      id = db.Column(db.Integer,primary_key = True)
      subcounties = db.relationship('SubCounty',backref='county',lazy= 'dynamic')
-     district_id = db.Column(db.String(20),ForeignKey('district.id'))
+     district_id = db.Column(db.String(20),db.ForeignKey('district.id'))
     
 
 class Village(db.Model):
@@ -58,7 +58,7 @@ class Village(db.Model):
     __tablename__ = 'village'
     name = db.Column(db.String(20),unique = True)
     id = db.Column(db.Integer,primary_key = True)
-    parish_id = db.Column(db.String(20),ForeignKey('parish.id'))
+    parish_id = db.Column(db.String(20),db.ForeignKey('parish.id'))
     
 
 
@@ -68,5 +68,5 @@ class Parish(db.Model):
     name = db.Column(db.String(20),unique = True)
     id = db.Column(db.Integer,primary_key = True)
     villages = db.relationship('Village',backref = 'parish',lazy= 'dynamic')
-    subcounty_id = db.Column(db.Integer,ForeignKey('subcounty.id'))
+    subcounty_id = db.Column(db.Integer,db.ForeignKey('subcounty.id'))
 

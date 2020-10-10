@@ -1,6 +1,7 @@
 import graphene
+from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from models import Party as PartyModel,District as DistrictModel,Posts as PostModel,County as CountyModel,SubCounty as SubCountyModel, Village as VillageModel,Candidates as CandidateModel,Parish as ParishModel
+from .models import Party as PartyModel,District as DistrictModel,Posts as PostModel,County as CountyModel,SubCounty as SubCountyModel, Village as VillageModel,Candidates as CandidateModel,Parish as ParishModel
 
 from graphql import GraphQLSchema
 
@@ -37,23 +38,27 @@ class CountyObject(SQLAlchemyObjectType):
 class SubCountyObject(SQLAlchemyObjectType):
    class Meta:
        model = SubCountyModel
-
+       interfaces = (relay.Node,) 
 class ParisheObject(SQLAlchemyObjectType):
    class Meta:
        model = ParishModel
+
+       interfaces = (relay.Node,) 
 class VillageObject(SQLAlchemyObjectType):
    class Meta:
        model = VillageModel
+       interfaces = (relay.Node,) 
 class PartyObject(SQLAlchemyObjectType):
    class Meta:
        model = PartyModel
+       interfaces = (relay.Node,) 
 
 
 
 
 
 class Query(graphene.ObjectType):
-    candidaites = graphene.List(CandidateObject)
+    candidates = graphene.List(CandidateObject)
     def candidate_resolver(self,info):
         query = CandidateObject.get_query(info)
         return query.all()

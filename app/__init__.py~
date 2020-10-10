@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_graphql import GraphQLView
-from schema import schema
+from . import schema
 from config import config
 db = SQLAlchemy()
 def create_app(config_name):
@@ -9,7 +9,7 @@ def create_app(config_name):
     app.debug = True
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
-    print(config)
+    print(config[config_name])
 
 
 

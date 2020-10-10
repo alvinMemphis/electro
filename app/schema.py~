@@ -58,7 +58,7 @@ class PartyObject(SQLAlchemyObjectType):
 
 
 class Query(graphene.ObjectType):
-    candidaites = graphene.List(CandidateObject)
+    candidates = graphene.List(CandidateObject)
     def candidate_resolver(self,info):
         query = CandidateObject.get_query(info)
         return query.all()

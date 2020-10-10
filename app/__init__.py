@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_graphql import GraphQLView
-from schema import schema
 from config import config
 db = SQLAlchemy()
 def create_app(config_name):
@@ -12,6 +11,7 @@ def create_app(config_name):
     print(config[config_name])
 
 
+    from . import schema
 
     app.add_url_rule(
     '/graphql-api',
