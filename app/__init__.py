@@ -10,9 +10,7 @@ def create_app(config_name):
     config[config_name].init_app(app)
     print(config[config_name])
 
-
-    from . import schema
-
+    from .schema import schema
     app.add_url_rule(
     '/graphql-api',
     view_func=GraphQLView.as_view(
