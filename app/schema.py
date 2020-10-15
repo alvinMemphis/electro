@@ -17,10 +17,28 @@ class PostObject(SQLAlchemyObjectType):
        model = PostModel
        interfaces = (graphene.relay.Node, ) 
 
+
+class CreatePost(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+    ok = graphene.Boolean()
+    post = graphene.Field(lambda:PostObject)
+    def mutate(self, info, name):
+        new_post = PostModel(name=name)
+        db.session.add(new_post)
+        db.session.commit()
+        ok =True
+        return CreatePost(post = new_post,ok=ok)
+
+
 class DistrictObject(SQLAlchemyObjectType):
-   class Meta:
+    class Meta:
        model = DistrictModel
        interfaces = (graphene.relay.Node, )
+
+
+
+
 class CreateDistrict(graphene.Mutation):
     class Arguments:
         name = graphene.String()
@@ -30,8 +48,6 @@ class CreateDistrict(graphene.Mutation):
 
     def mutate(self, info, name):
         new_district = DistrictModel(name=name)
-
-
         db.session.add(new_district)
         db.session.commit()
         ok =True
@@ -41,24 +57,118 @@ class CreateDistrict(graphene.Mutation):
 class CountyObject(SQLAlchemyObjectType):
    class Meta:
        model = CountyModel
+       interfaces = (relay.Node,) 
+
+class CreateCounty(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+    county =graphene.Field(lambda:CountyObject)
+
+    def mutate(self, info, name):
+        new_county = CountyModel(name=name)
+
+
+        db.session.add(new_county)
+        db.session.commit()
+        ok =True
+        return CreateCounty(county = new_county,ok=ok)
+
 
 class SubCountyObject(SQLAlchemyObjectType):
    class Meta:
        model = SubCountyModel
        interfaces = (relay.Node,) 
-class ParisheObject(SQLAlchemyObjectType):
+
+
+class CreateSubCounty(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+    subcounty =graphene.Field(lambda:SubCountyObject)
+
+    def mutate(self, info, name):
+        new_subcounty = SubCountyModel(name=name)
+
+
+        db.session.add(new_subcounty)
+        db.session.commit()
+        ok =True
+        return CreateSubCounty(subcounty = new_subcounty,ok=ok)
+
+
+
+       
+class ParishObject(SQLAlchemyObjectType):
    class Meta:
        model = ParishModel
 
        interfaces = (relay.Node,) 
+
+
+class CreateParish(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+    parish =graphene.Field(lambda:ParishObject)
+
+    def mutate(self, info, name):
+        new_parish = ParishModel(name=name)
+
+
+        db.session.add(new_parish)
+        db.session.commit()
+        ok =True
+        return CreateParish(parish = new_parish,ok=ok)
+
+      
 class VillageObject(SQLAlchemyObjectType):
    class Meta:
        model = VillageModel
        interfaces = (relay.Node,) 
+
+class CreateVillage(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+    village =graphene.Field(lambda:VillageObject)
+
+    def mutate(self, info, name):
+        new_village = VillageModel(name=name)
+
+
+        db.session.add(new_village)
+        db.session.commit()
+        ok =True
+        return CreateVillage(village = new_village,ok=ok)
+
+      
 class PartyObject(SQLAlchemyObjectType):
    class Meta:
        model = PartyModel
        interfaces = (relay.Node,) 
+
+
+class CreateParty(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+    party =graphene.Field(lambda:PartyObject)
+
+    def mutate(self, info, name):
+        new_party = PartyModel(name=name)
+
+
+        db.session.add(new_party)
+        db.session.commit()
+        ok =True
+        return CreateParty(party = new_party,ok=ok)
+
 
 
 class Mutation(graphene.ObjectType):
@@ -68,13 +178,51 @@ class Mutation(graphene.ObjectType):
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     candidates = SQLAlchemyConnectionField(CandidateObject)
-    all_districts =  SQLAlchemyConnectionField(DistrictObject)
+    all_districts = SQLAlchemyConnectionField(DistrictObject)
+    all_posts =  SQLAlchemyConnectionField(PostObject)
+    all_parties =  SQLAlchemyConnectionField(PartyObject)
+    all_counties =  SQLAlchemyConnectionField(CountyObject)
+    all_subcounties =  SQLAlchemyConnectionField(SubCountyObject)
+    all_villages =  SQLAlchemyConnectionField(VillageObject)
+    all_parishes =  SQLAlchemyConnectionField(ParishObject)
+    
+    
+    
+       
     def candidate_resolver(self,info):
         query = CandidateObject.get_query(info)
         return query.all()
     def district_resolver(self,info):
         query = DistrictObject.get_query(info)
         return query.all()
+    def county_resolver(self,info):
+        query = CountyObject.get_query(info)
+        return query.all()
+    
+
+
+    def subcounty_resolver(self,info):
+        query = SubCountyObject.get_query(info)
+        return query.all()
+
+    def village_resolver(self,info):
+        query = VillageObject.get_query(info)
+        return query.all()
+
+    def post_resolver(self,info):
+        query = PostObject.get_query(info)
+        return query.all()
+
+    def party_resolver(self,info):
+        query = PartyObject.get_query(info)
+        return query.all()
+
+
+    def parish_resolver(self,info):
+        query = ParishObject.get_query(info)
+        return query.all()
+
+
 
 
 
