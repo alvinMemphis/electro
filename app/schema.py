@@ -50,7 +50,13 @@ class DistrictObject(SQLAlchemyObjectType):
        interfaces = (graphene.relay.Node, )
 
 
+class DistrictConnection(graphene.Connection):
+    class Meta:
+        node = DistrictObject
+    count = graphene.Int()
 
+    def resolve_count(root, info):
+        return len(root.edges)
 
 class CreateDistrict(graphene.Mutation):
     class Arguments:
@@ -193,16 +199,16 @@ class Mutation(graphene.ObjectType):
     create_parish = CreateParish.Field()
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
-    candidates = graphene.List(CandidateObject,first=graphene.Int(),last=graphene.Int())
-    districts = graphene.List(DistrictObject,first=graphene.Int(),last=graphene.Int())
-    posts = graphene.List(PostObject)
-    parties =  graphene.List(PartyObject)
-    counties =  graphene.List(CountyObject)
-    subcounties =  graphene.List(SubCountyObject)
-    villages =  graphene.List(VillageObject)
-    parishes =  graphene.List(ParishObject)
-    district = graphene.relay.Node.Field(DistrictObject)
-    
+    candidates = graphene.ConnectionField(CandidateObject.connection)
+    # districts = graphene.List(DistrictObject,first=graphene.Int(),last=graphene.Int())
+    posts = graphene.ConnectionField(PostObject.connection)
+    parties = graphene.ConnectionField(PartyObject.connection)
+    counties = graphene.ConnectionField(CountyObject.connection)
+    subcounties = graphene.ConnectionField(SubCountyObject.connection)
+    villages = graphene.ConnectionField(VillageObject.connection)
+    parishes =  graphene.ConnectionField(ParishObject.connection)
+    district = graphene.relay.Node.Field(DistrictObject.connection)
+    districts = graphene.ConnectionField(DistrictObject.connection)
     
     def paginator(query):
         pass
