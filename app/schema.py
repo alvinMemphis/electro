@@ -12,6 +12,19 @@ class CandidateObject(SQLAlchemyObjectType):
        interfaces = (graphene.relay.Node, )
 
 
+
+class CreateCandidate(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+    ok = graphene.Boolean()
+    post = graphene.Field(lambda:CandidateObject)
+    def mutate(self, info, name):
+        new_candidate = CandidateModel(name=name)
+        db.session.add(new_candidate)
+        db.session.commit()
+        ok =True
+        return CreateCandidate(candidate = new_candidate,ok=ok)
+
 class PostObject(SQLAlchemyObjectType):
    class Meta:
        model = PostModel
@@ -174,51 +187,59 @@ class CreateParty(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     create_district = CreateDistrict.Field()
-
+    create_county = CreateCounty.Field()
+    create_subcounty = CreateCounty.Field()
+    create_candidate = CreateCandidate.Field()
+    create_parish = CreateParish.Field()
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
-    candidates = SQLAlchemyConnectionField(CandidateObject)
-    all_districts = SQLAlchemyConnectionField(DistrictObject)
-    all_posts =  SQLAlchemyConnectionField(PostObject)
-    all_parties =  SQLAlchemyConnectionField(PartyObject)
-    all_counties =  SQLAlchemyConnectionField(CountyObject)
-    all_subcounties =  SQLAlchemyConnectionField(SubCountyObject)
-    all_villages =  SQLAlchemyConnectionField(VillageObject)
-    all_parishes =  SQLAlchemyConnectionField(ParishObject)
+    candidates = graphene.List(CandidateObject,first=graphene.Int(),last=graphene.Int())
+    districts = graphene.List(DistrictObject,first=graphene.Int(),last=graphene.Int())
+    posts = graphene.List(PostObject)
+    parties =  graphene.List(PartyObject)
+    counties =  graphene.List(CountyObject)
+    subcounties =  graphene.List(SubCountyObject)
+    villages =  graphene.List(VillageObject)
+    parishes =  graphene.List(ParishObject)
+    district = graphene.relay.Node.Field(DistrictObject)
     
     
-    
+    def paginator(query):
+        pass
+        
        
-    def candidate_resolver(self,info):
+    def resolve_candidates(self,info,**kwargs):
         query = CandidateObject.get_query(info)
         return query.all()
-    def district_resolver(self,info):
+
+
+    def resolve_districts(self,info,**kwargs):
         query = DistrictObject.get_query(info)
         return query.all()
-    def county_resolver(self,info):
+    def resolve_counties(self,info,**kwargs):
         query = CountyObject.get_query(info)
         return query.all()
     
 
 
-    def subcounty_resolver(self,info):
+    def resolve_subcounties(self,info,**kwargs):
         query = SubCountyObject.get_query(info)
         return query.all()
 
-    def village_resolver(self,info):
+    def resolve_villages(self,info):
         query = VillageObject.get_query(info)
         return query.all()
 
-    def post_resolver(self,info):
+    def resolve_posts(self,info):
         query = PostObject.get_query(info)
         return query.all()
 
-    def party_resolver(self,info):
+    def resolve_parties(self,info):
         query = PartyObject.get_query(info)
         return query.all()
 
 
-    def parish_resolver(self,info):
+    def resolve_parishes(self,info):
         query = ParishObject.get_query(info)
         return query.all()
 

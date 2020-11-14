@@ -1,10 +1,12 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_graphql import GraphQLView
 from config import config
 db = SQLAlchemy()
 def create_app(config_name):
     app = Flask(__name__)
+    CORS(app,resources={r"/graphql-api": {"origins": "http://localhost:3000"}})
     app.debug = True
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
